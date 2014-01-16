@@ -1,0 +1,13 @@
+
+<div class="entry-edit">
+    <div class="entry-edit-head">
+        <h4 class="icon-head head-edit-form fieldset-legend">Suppliers</h4>
+    </div>
+    <div id="group_fields4" class="fieldset fieldset-wide">
+        <div class="grid">
+        <?php
+            echo Mage::getModel('sinchimport/sinch')->getSinchDistribotorsTableHtml();
+        ?>
+       </div>
+    </div>
+</div>

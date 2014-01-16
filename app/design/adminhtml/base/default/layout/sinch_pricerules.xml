@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Magento backend layout
+ *
+ * @author Stock in the Channel
+ */
+-->
+<layout>
+    <adminhtml_pricerules_index>
+        <reference name="content">
+            <block type="sinch_pricerules/adminhtml_pricerules" name="pricerules" />
+        </reference>
+    </adminhtml_pricerules_index>
+
+    <adminhtml_pricerules_grid>
+        <block type="sinch_pricerules/adminhtml_pricerules_grid" name="root"/>
+    </adminhtml_pricerules_grid>
+
+    <adminhtml_pricerules_new>
+        <update handle="adminhtml_pricerules_edit" />
+    </adminhtml_pricerules_new>
+
+    <adminhtml_pricerules_edit>
+        <update handle="editor"/>
+        <reference name="content">
+            <block type="sinch_pricerules/adminhtml_pricerules_edit" name="pricerules_edit" />
+        </reference>
+        <reference name="left">
+            <block type="sinch_pricerules/adminhtml_pricerules_edit_tabs" name="pricerules_edit_tabs">
+                <block type="sinch_pricerules/adminhtml_pricerules_edit_tab_main" name="pricerules_edit_tab_main" />
+                <action method="addTab">
+					<name>main_section</name>
+					<block>pricerules_edit_tab_main</block>
+				</action>
+            </block>
+        </reference>
+    </adminhtml_pricerules_edit>
+</layout>

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Sinch_Pricerules>
+            <active>true</active>
+            <codePool>local</codePool>
+        </Sinch_Pricerules>
+    </modules>
+</config>

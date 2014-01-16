@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Price Rules admin config
+ *
+ * @author Stock in the Channel
+ */
+-->
+<config>
+    <menu>
+         <sinch translate="title" module="sinch_pricerules">
+            <title>Stock in the Channel</title>
+            <sort_order>200</sort_order>
+            <children>
+                <manage translate="title" module="sinch_pricerules">
+                    <title>Manage Price Rules</title>
+                    <action>adminhtml/pricerules</action>
+                    <sort_order>250</sort_order>
+                </manage>
+            </children>
+         </sinch>
+    </menu>
+
+    <acl>
+        <resources>
+            <admin>
+                <children>
+                    <sinch translate="title" module="sinch_pricerules">
+                        <title>Stock in the Channel</title>
+                        <sort_order>65</sort_order>
+                        <children>
+                            <manage translate="title">
+                                <title>Manage Price Rules</title>
+                                <sort_order>0</sort_order>
+                                <children>
+                                    <save translate="title">
+                                        <title>Save Price Rule</title>
+                                        <sort_order>0</sort_order>
+                                    </save>
+                                    <delete translate="title">
+                                        <title>Delete Price Rule</title>
+                                        <sort_order>10</sort_order>
+                                    </delete>
+                                </children>
+                            </manage>
+                        </children>
+                    </sinch>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <sinch translate="title" module="sinch_pricerules">
+                                        <title>Price Rules Management</title>
+                                    </sinch>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>
