@@ -48,7 +48,7 @@ class Sinch_Pricerules_Model_Observer {
 		} elseif($rule["absolute_price"]){
 			$newPrice = $rule["absolute_price"];
 		} else {
-				Mage::log("A Severe Pricerules Error Occured");
+				Mage::log("A Severe Pricerules Error Occurred");
 				throw new Exception("Retrieved pricing rule not valid. Missing result action");
 		}
 		//Set all the Prices to prevent Magento revealing the original price in any of its "As low as *price*" blocks

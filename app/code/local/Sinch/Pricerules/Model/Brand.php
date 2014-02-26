@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * Brand Model
+ *
+ * @author Stock in the Channel
+ */
 class Sinch_Pricerules_Model_Brand
 {
 	public function getName($id)

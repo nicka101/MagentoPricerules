@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * Category Model
+ *
+ * @author Stock in the Channel
+ */
 class Sinch_Pricerules_Model_Category
 {
 	private $options = array();

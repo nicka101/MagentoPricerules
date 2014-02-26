@@ -1,10 +1,10 @@
 <?php
-/*
+/**
  * Pricerules Upgrade Script
+ * Removes Foreign Key on customer_group
  *
- * Removes Customer Group Foreign Key
+ * @author Stock in the Channel
  */
-
 $installer = $this;
 $installer->startSetup();
 

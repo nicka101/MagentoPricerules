@@ -1,6 +1,7 @@
 <?php
 /**
- * Data Upgrade Script to fix IS NULL checks in existing rules
+ * Data Upgrade Script
+ * Fixes IS NULL checks in existing rules
  *
  * @author Stock in the Channel
  */

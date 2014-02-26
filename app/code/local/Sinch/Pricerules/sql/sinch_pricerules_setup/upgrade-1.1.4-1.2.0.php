@@ -1,6 +1,7 @@
 <?php
 /**
  * Price rules upgrade script
+ * Add the Custom Customer Attribute containing the Pricerules Group
  *
  * @author Stock in the Channel
  */
