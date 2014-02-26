@@ -18,7 +18,8 @@ class Sinch_Pricerules_Model_Observer {
 		$queryParams["originalPrice"] = $originalPrice;
 		$queryParams["productId"] = $product->getId();
 		$queryParams["manufacturer"] = $product->getManufacturer();
-		$queryParams["customerGroup"] = Mage::getSingleton('customer/session')->getCustomerGroupId();
+		$custSession = Mage::getSingleton('customer/session');
+		$queryParams["customerGroup"] = ($custSession->isLoggedIn() ? $custSession->getCustomer()->getSinchPricerulesGroup() : 0);
 		$catParamNames = array();
 		foreach($product->getCategoryIds() as $index => $id){
 			$catParamNames[] = ":" . CatIDPrefix . $index;
@@ -47,9 +48,14 @@ class Sinch_Pricerules_Model_Observer {
 		} elseif($rule["absolute_price"]){
 			$newPrice = $rule["absolute_price"];
 		} else {
-			Mage::log("A Severe Pricerules Error Occured");
-			$newPrice = $originalPrice;
+				Mage::log("A Severe Pricerules Error Occured");
+				throw new Exception("Retrieved pricing rule not valid. Missing result action");
 		}
+		//Set all the Prices to prevent Magento revealing the original price in any of its "As low as *price*" blocks
+		$product->setMinPrice($newPrice);
+		$product->setMinimalPrice($newPrice);
+		$product->setMaxPrice($newPrice);
+		$product->setTierPrice($newPrice);
 		$product->setFinalPrice($newPrice);
 		return $this;
 	}
@@ -133,27 +139,15 @@ class Sinch_Pricerules_Model_Observer {
 			INNER JOIN " . Mage::getSingleton('core/resource')->getTableName('stINch_products_mapping') . " spm ON sipr.product_sku = spm.product_sku
 			SET sipr.magento_product_id = spm.entity_id
 		");
-		// delete rules with non matched categories
+		//delete useless rules
 		$dbWrite->query("DELETE FROM " . $importTable . "
-			WHERE category_id IS NOT NULL AND magento_category_id IS NULL
-		"); 
-		// delete rules with non matched brands
-		$dbWrite->query("DELETE FROM " . $importTable . "
-			WHERE brand_id IS NOT NULL AND magento_brand_id IS NULL
-		"); 
-		// delete rules with non matched skus
-		$dbWrite->query("DELETE FROM " . $importTable . "
-			WHERE product_sku IS NOT NULL AND magento_product_id IS NULL
-		"); 
-		// delete rules with non customer groups
-		$dbWrite->query("DELETE FROM " . $importTable . "
-			WHERE customer_group_name IS NOT NULL AND magento_customer_group_id IS NULL
+			WHERE (category_id IS NOT NULL AND magento_category_id IS NULL)
+			OR (brand_id IS NOT NULL AND magento_brand_id IS NULL)
+			OR (product_sku IS NOT NULL AND magento_product_id IS NULL)
+			OR (customer_group_name IS NOT NULL AND magento_customer_group_id IS NULL)
+			OR (markup_percentage IS NULL AND markup_price IS NULL AND absolute_price IS NULL)
 		");
-		// delete rules without any price rule set
-		$dbWrite->query("DELETE FROM " . $importTable . "
-			WHERE markup_percentage IS NULL AND markup_price IS NULL AND absolute_price IS NULL
-		");
-		// delete non-existent rules
+		// delete imported rules which no longer exist
 		$dbWrite->query("DELETE spr FROM " . $rulesTable . " as spr
 			WHERE NOT EXISTS (
 				SELECT *

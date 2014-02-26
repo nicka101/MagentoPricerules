@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<config>
+    <api>
+        <resources>
+			<pricerules translate="title" module="sinch_pricerules">
+				<title>Stockinthechannel Pricerules Resource</title>
+				<model>sinch_pricerules/api</model>
+				<methods>
+					<setpricerulesgroup translate="title" module="sinch_pricerules">
+						<title>Set Customer Pricerules Group</title>
+					</setpricerulesgroup>
+					<acl>pricerules/setpricerulesgroup</acl>
+				</methods>
+				<faults module="pricerules">
+					<customer_missing>
+						<code>404</code>
+						<message>The Customer ID supplied doesn't match a customer</message>
+					</customer_missing>
+				</faults>
+			</pricerules>
+        </resources>
+		<v2>
+			<resources_function_prefix>
+				<pricerules>pricerules</pricerules>
+			</resources_function_prefix>
+		</v2>
+        <acl>
+            <resources>
+                <pricerules translate="title" module="sinch_pricerules">
+					<title>Sinch Pricerules</title>
+					<sort_order>999</sort_order>
+					<setpricerulesgroup translate="title" module="sinch_pricerules">
+						<title>Set Customer Pricerules Group</title>
+					</setpricerulesgroup>
+				</pricerules>
+            </resources>
+        </acl>
+    </api>
+</config>

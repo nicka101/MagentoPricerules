@@ -9,10 +9,19 @@
 <config>
     <modules>
         <Sinch_Pricerules>
-            <version>1.1.4</version>
+            <version>1.2.1</version>
         </Sinch_Pricerules>
     </modules>
 	<global>
+        <fieldsets>
+            <customer_account>
+                <sinch_pricerules_group>
+                    <create>1</create>
+                    <update>1</update>
+                    <name>1</name>
+                </sinch_pricerules_group>
+			</customer_account>
+		</fieldsets>
         <models>
             <sinch_pricerules>
                 <class>Sinch_Pricerules_Model</class>
