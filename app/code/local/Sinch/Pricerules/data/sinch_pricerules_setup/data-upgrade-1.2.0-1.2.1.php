@@ -1,0 +1,4 @@
+<?php
+/*
+ * Placeholder Upgrade Script
+ */

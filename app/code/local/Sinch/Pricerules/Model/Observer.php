@@ -4,15 +4,12 @@
  *
  * @author Stock in the Channel
  */
-define('Table_Sinch_PriceRulesImport', 'sinch_pricerulesimport');
-define('Table_Sinch_PriceRules', 'sinch_pricerules');
-define('Table_Customer_Group', 'customer_group');
 define('CatIDPrefix', 'CategoryID_');
 
 class Sinch_Pricerules_Model_Observer {
 	public function getFinalPrice(Varien_Event_Observer $observer){
 		$product = $observer->getProduct();
-		$rulesTable = Mage::getSingleton('core/resource')->getTableName(Table_Sinch_PriceRules);
+		$rulesTable = Mage::getSingleton('core/resource')->getTableName('sinch_pricerules/pricerules');
 		$queryParams = array();
 		$originalPrice = $product->getPrice();
 		$queryParams["originalPrice"] = $originalPrice;
@@ -68,62 +65,48 @@ class Sinch_Pricerules_Model_Observer {
 	}
 	
 	public function ImportPriceRules(Varien_Event_Observer $observer){
-		$parse_file = $observer->getFile();
+		$ruleFile = $observer->getRuleFile();
+        $groupFile = $observer->getGroupFile();
 		$terminate_char = $observer->getSeperator();
-		$importTable = Mage::getSingleton('core/resource')->getTableName(Table_Sinch_PriceRulesImport);
-		$prCustGroupTable = Mage::getSingleton('core/resource')->getTableName(Table_Customer_Group);
-		$rulesTable = Mage::getSingleton('core/resource')->getTableName(Table_Sinch_PriceRules);
+		$importTable = Mage::getSingleton('core/resource')->getTableName('sinch_pricerules/import');
+		$prGroupTable = Mage::getSingleton('core/resource')->getTableName('sinch_pricerules/group');
+		$rulesTable = Mage::getSingleton('core/resource')->getTableName('sinch_pricerules/pricerules');
 		$dbWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
 
+        //Clear Auto-imported Rules
+        $dbWrite->query("DELETE FROM ". $prGroupTable . "WHERE is_manually_added = 0 AND group_id != 0");
+        //Import the Updated Rules
+        $dbWrite->query("LOAD DATA LOCAL INFILE '" . $groupFile . "'
+            REPLACE INTO TABLE" . $prGroupTable . " (group_id, group_name)
+            FIELDS TERMINATED BY '" . $terminate_char . "'
+            OPTIONALLY ENCLOSED BY '\"'
+            LINES TERMINATED BY \"\r\n\"
+            IGNORE 1 LINES
+            (@group_id, @group_name)
+            SET group_id = NULLIF(@group_id, ''),
+                group_name = NULLIF(@group_name, '')
+        ");
+
 		$dbWrite->query("TRUNCATE TABLE " . $importTable);
-		$dbWrite->query("LOAD DATA LOCAL INFILE '" . $parse_file . "'
+		$dbWrite->query("LOAD DATA LOCAL INFILE '" . $ruleFile . "'
 			INTO TABLE " . $importTable . "
 			FIELDS TERMINATED BY '" . $terminate_char . "'
 			OPTIONALLY ENCLOSED BY '\"'
 			LINES TERMINATED BY \"\r\n\"
 			IGNORE 1 LINES
-			(pricerules_id, @price_from, @price_to, @category_id, @brand_id, @product_sku, @customer_group_name, @markup_percentage, @markup_price, @absolute_price, @execution_order)
+			(pricerules_id, @price_from, @price_to, @category_id, @brand_id, @product_sku, @group_id, @markup_percentage, @markup_price, @absolute_price, @execution_order)
 			SET	price_from = NULLIF(@price_from, ''),
 				price_to = NULLIF(@price_to, ''), 
 				category_id = NULLIF(@category_id, ''),
 				brand_id = NULLIF(@brand_id, ''),
 				product_sku = NULLIF(@product_sku, ''),
-				customer_group_name = @customer_group_name,
+				group_id = NULLIF(@group_id, ''),
 				markup_percentage = NULLIF(@markup_percentage, ''),
 				markup_price = NULLIF(@markup_price, ''),
 				absolute_price = NULLIF(@absolute_price, ''),
 				execution_order = @execution_order
 		");
-		// delete customer groups
-		$dbWrite->query("DELETE cg FROM ".$prCustGroupTable." AS cg
-			WHERE cg.customer_group_id > 3
-			AND NOT EXISTS (
-				SELECT *
-				FROM " . $importTable . " AS spri
-				WHERE cg.customer_group_code = spri.customer_group_name
-			)
-		");
-		// create customer groups
-		$dbWrite->query("INSERT INTO " . $prCustGroupTable . "
-			(
-				customer_group_code,
-				tax_class_id
-			)
-			SELECT DISTINCT
-				customer_group_name,
-				3
-			FROM ".$importTable." AS spri
-			WHERE NOT EXISTS (
-				SELECT *
-				FROM " . $prCustGroupTable . " AS cg
-				WHERE cg.customer_group_code = spri.customer_group_name
-			)
-		");
-		// update table with customer group IDs
-		$dbWrite->query("UPDATE " . $importTable . " sipr
-			INNER JOIN " . Mage::getSingleton('core/resource')->getTableName("customer_group") . " AS cg ON sipr.customer_group_name = cg.customer_group_code
-			SET sipr.magento_customer_group_id = cg.customer_group_id
-		");
+
 		// update table with category IDs
 		$dbWrite->query("UPDATE " . $importTable . " sipr
 			INNER JOIN " . Mage::getSingleton('core/resource')->getTableName('catalog_category_entity') . " cce ON sipr.category_id = cce.store_category_id
@@ -144,17 +127,7 @@ class Sinch_Pricerules_Model_Observer {
 			WHERE (category_id IS NOT NULL AND magento_category_id IS NULL)
 			OR (brand_id IS NOT NULL AND magento_brand_id IS NULL)
 			OR (product_sku IS NOT NULL AND magento_product_id IS NULL)
-			OR (customer_group_name IS NOT NULL AND magento_customer_group_id IS NULL)
 			OR (markup_percentage IS NULL AND markup_price IS NULL AND absolute_price IS NULL)
-		");
-		// delete imported rules which no longer exist
-		$dbWrite->query("DELETE spr FROM " . $rulesTable . " as spr
-			WHERE NOT EXISTS (
-				SELECT *
-				FROM " . $importTable . " AS spri
-				WHERE spr.pricerules_id = spri.pricerules_id
-				AND is_manually_added = 0
-			)
 		");
 		// insert rules into sinch_pricerules from sinch_pricerulesimport
 		$dbWrite->query("INSERT INTO " . $rulesTable . "
@@ -165,7 +138,7 @@ class Sinch_Pricerules_Model_Observer {
 				category_id,
 				brand_id,
 				product_id,
-				customer_group_id,
+				group_id,
 				markup_percentage,
 				markup_price,
 				absolute_price,
@@ -180,7 +153,7 @@ class Sinch_Pricerules_Model_Observer {
 					magento_category_id,
 					magento_brand_id,
 					magento_product_id,
-					magento_customer_group_id,
+					group_id,
 					markup_percentage,
 					markup_price,
 					absolute_price,
@@ -194,7 +167,7 @@ class Sinch_Pricerules_Model_Observer {
 				category_id = a.magento_category_id,
 				brand_id = a.magento_brand_id,
 				product_id = a.magento_product_id,
-				customer_group_id = a.magento_customer_group_id,
+				group_id = a.group_id,
 				markup_percentage = a.markup_percentage,
 				markup_price = a.markup_price,
 				absolute_price = a.absolute_price,

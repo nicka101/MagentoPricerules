@@ -131,6 +131,13 @@ class Sinch_Pricerules_Adminhtml_PricerulesController extends Mage_Adminhtml_Con
 					);
 				}
 			}
+
+            Mage::log("Data: " . $data);
+            Mage::log("Model: " . $model);
+
+            $this->_getSession()->addError(
+                Mage::helper('sinch_pricerules')->__('Deliberately Threw Error')
+            );
 			
 			if (!$hasError)
 			{
@@ -164,7 +171,7 @@ class Sinch_Pricerules_Adminhtml_PricerulesController extends Mage_Adminhtml_Con
 					$model->save();
 
 					$this->_getSession()->addSuccess(
-						Mage::helper('sinch_pricerules')->__('The price rule has been saved. You must reindex and flush your cache for changes to take affect!')
+						Mage::helper('sinch_pricerules')->__('The price rule has been saved.')
 					);
 
 					if ($this->getRequest()->getParam('back')) {

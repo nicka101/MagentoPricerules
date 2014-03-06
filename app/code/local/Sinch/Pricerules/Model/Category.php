@@ -34,7 +34,7 @@ class Sinch_Pricerules_Model_Category
 	
 	private function loadTree() {
 		
-		$tree = Mage::getResourceSingleton('catalog/category_tree' )->load();
+		$tree = Mage::getResourceSingleton('catalog/category_tree')->load();
 		
 		$store = 1;
 		$parentId = 1;

@@ -148,19 +148,24 @@ class Sinch_Pricerules_Block_Adminhtml_Pricerules_Edit_Tab_Main
 		
 		if ($new)
 		{
-			$fieldset->addField('customer_group_id', 'text', array(
-				'name' => 'customer_group_id',
+            $groups = Mage::getSingleton('sinch_pricerules/group')->getOptionArray();
+
+			$fieldset->addField('group_id', 'select', array(                     //CONVERT TO SELECT
+				'name' => 'customer_name',
 				'label' => 'Price Group',
 				'title' => 'Price Group',
+                'values' => $groups
 			));
 		}
 		else
 		{
-			$fieldset->addField('customer_group_id', 'label', array(
-				'name' => 'customer_group_id',
+			$fieldset->addField('group_name', 'label', array(
+				'name' => 'customer_name',
 				'label' => 'Price Group',
 				'title' => 'Price Group'
 			));
+
+            $model->group_name = Mage::getModel('sinch_pricerules/group')->loadByGroupId($model->group_id)->getName();
 		}
 		
 		$fieldset->addField('price_types', 'radios', array(			

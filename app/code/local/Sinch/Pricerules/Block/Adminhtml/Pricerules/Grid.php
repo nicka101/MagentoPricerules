@@ -22,10 +22,11 @@ class Sinch_Pricerules_Block_Adminhtml_Pricerules_Grid extends Mage_Adminhtml_Bl
         $collection = Mage::getModel('sinch_pricerules/pricerules')->getResourceCollection();
 		$collection->getSelect()
 			->reset(Zend_Db_Select::COLUMNS)
-			->columns(array('pricerules_id', 'price_from', 'price_to', 'markup_percentage', 'markup_price', 'absolute_price', 'execution_order', 'customer_group_id'))
+			->columns(array('pricerules_id', 'price_from', 'price_to', 'markup_percentage', 'markup_price', 'absolute_price', 'execution_order', 'group_id'))
 			->joinLeft(array('ccev' => 'catalog_category_entity_varchar'), 'ccev.entity_id = main_table.category_id and ccev.attribute_id = 41 and store_id = 0', array('category_name' => 'ccev.value'))
 			->joinLeft(array('eaov' => 'eav_attribute_option_value'), 'eaov.option_id = main_table.brand_id', array('brand_name' => 'eaov.value'))
-			->joinLeft(array('cpe' => 'catalog_product_entity'), 'cpe.entity_id = main_table.product_id', array('product_sku' => 'cpe.sku'));
+			->joinLeft(array('cpe' => 'catalog_product_entity'), 'cpe.entity_id = main_table.product_id', array('product_sku' => 'cpe.sku'))
+            ->joinLeft(array('spg' => 'sinch_pricerules_groups'), 'spg.group_id = main_table.group_id', array('group_name' => 'spg.group_name'));
 			
 		//$collection->printlogquery(true);exit;
         $this->setCollection($collection);
@@ -79,11 +80,12 @@ class Sinch_Pricerules_Block_Adminhtml_Pricerules_Grid extends Mage_Adminhtml_Bl
 			'type' => 'varchar'
         ));
 		
-		$this->addColumn('customer_group_id', array(
+		$this->addColumn('group_name', array(
             'header' => Mage::helper('sinch_pricerules')->__('Price Group'),
             'width' => '50px',
-            'index' => 'customer_group_id',
-			'type' => 'smallint'
+            'index' => 'group_name',
+            'filter_index' => 'spg.group_name',
+			'type' => 'varchar'
         ));
 		
 		$this->addColumn('markup_percentage', array(

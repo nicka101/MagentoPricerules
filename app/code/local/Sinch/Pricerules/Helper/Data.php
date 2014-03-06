@@ -6,7 +6,7 @@
  */
 class Sinch_Pricerules_Helper_Data extends Mage_Core_Helper_Data
 {
-    protected $_pricerulesItemInstance;
+    protected $_priceRulesItemInstance;
 	
     public function getPriceRulesItemInstance()
     {

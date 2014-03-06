@@ -17,11 +17,11 @@ $attributeGroupId = $setup->getDefaultAttributeGroupId($customerEntityId, $attri
 $setup->addAttribute('customer', 'sinch_pricerules_group', array(
 	'input'			=>	'text',
 	'type'			=>	'int',
-	'label'			=>	'Stockinthechannel Pricerules Group',
+	'label'			=>	'Pricerules Group',
 	'visible'		=>	1,
 	'required'		=>	1,
 	'user_defined'	=>	1,
-	'default_value'	=>	0,
+	'default_value'	=>	'0',
 ));
 
 $setup->addAttributeToGroup(

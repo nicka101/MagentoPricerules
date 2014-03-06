@@ -6,6 +6,7 @@
  */
 
 $installer = $this;
+$installer->startSetup();
 
 $table = $installer->getConnection()
     ->newTable($installer->getTable('sinch_pricerules/pricerules'))
@@ -198,3 +199,5 @@ $table = $installer->getConnection()
     ->setComment('Price rules import');
 	
 $installer->getConnection()->createTable($table);
+
+$installer->endSetup();

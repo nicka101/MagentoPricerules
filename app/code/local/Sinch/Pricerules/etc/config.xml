@@ -9,7 +9,7 @@
 <config>
     <modules>
         <Sinch_Pricerules>
-            <version>1.2.1</version>
+            <version>1.2.3</version>
         </Sinch_Pricerules>
     </modules>
 	<global>
@@ -33,20 +33,14 @@
                     <pricerules>
                         <table>sinch_pricerules</table>
                     </pricerules>
+                    <group>
+                        <table>sinch_pricerules_groups</table>
+                    </group>
+                    <import>
+                        <table>sinch_pricerulesimport</table>
+                    </import>
                 </entities>
             </pricerules_resource>
-			<sinch_pricerulesimport>
-                <class>Sinch_Pricerulesimport_Model</class>
-                <resourceModel>pricerulesimport_resource</resourceModel>
-            </sinch_pricerulesimport>
-            <pricerulesimport_resource>
-                <class>Sinch_Pricerulesimport_Model_Resource</class>
-                <entities>
-                    <pricerulesimport>
-                        <table>sinch_pricerulesimport</table>
-                    </pricerulesimport>
-                </entities>
-            </pricerulesimport_resource>
         </models>
         <helpers>
             <sinch_pricerules>
