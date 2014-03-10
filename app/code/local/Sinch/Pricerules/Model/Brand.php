@@ -4,15 +4,19 @@
  *
  * @author Stock in the Channel
  */
-class Sinch_Pricerules_Model_Brand
+class Sinch_Pricerules_Model_Brand extends Mage_Core_Model_Abstract
 {
+    protected function _construct(){
+        $this->_init('sinch_pricerules/brand');
+    }
+
 	public function getName($id)
 	{
 		$attr = Mage::getModel('eav/entity_attribute_option')
 			->getCollection()
 			->setStoreFilter()
 			->join('attribute','attribute.attribute_id = main_table.attribute_id', 'attribute_code')
-			->addFieldToFilter('main_table.option_id',array('eq' => $id))->getFirstItem(); 
+			->addFieldToFilter('main_table.option_id',array('eq' => $id))->getFirstItem();
 
 		return ($attr->value);
 	}
