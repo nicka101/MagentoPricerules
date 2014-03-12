@@ -150,7 +150,7 @@ class Sinch_Pricerules_Block_Adminhtml_Pricerules_Edit_Tab_Main
 		{
             $groups = Mage::getSingleton('sinch_pricerules/group')->getOptionArray();
 
-			$fieldset->addField('group_id', 'select', array(                     //CONVERT TO SELECT
+			$fieldset->addField('group_id', 'select', array(
 				'name' => 'customer_name',
 				'label' => 'Price Group',
 				'title' => 'Price Group',

@@ -9,7 +9,8 @@
 $installer = $this;
 $installer->startSetup();
 
-$setup = new Mage_Eav_Model_Entity_Setup('core_setup');
+$setup = new Mage_Eav_Model_Entity_Setup('sinch_pricerules_setup');
+$setup->startSetup();
 $customerEntityId = $setup->getEntityTypeId('customer');
 $attributeSetId = $setup->getDefaultAttributeSetId($customerEntityId);
 $attributeGroupId = $setup->getDefaultAttributeGroupId($customerEntityId, $attributeSetId);
@@ -37,3 +38,4 @@ $attrib->setData('used_in_forms', array('adminhtml_customer'));
 $attrib->save();
 
 $setup->endSetup();
+$installer->endSetup();
