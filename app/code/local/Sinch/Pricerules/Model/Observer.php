@@ -31,7 +31,7 @@ class Sinch_Pricerules_Model_Observer {
 			  product_id = :productId ) AND
 			( brand_id IS NULL OR
 			  brand_id = :manufacturer ) AND
-			customer_group_id = :customerGroup
+			group_id = :customerGroup
 			ORDER BY execution_order ASC
 			LIMIT 1
 		";
