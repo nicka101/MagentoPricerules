@@ -131,13 +131,6 @@ class Sinch_Pricerules_Adminhtml_PricerulesController extends Mage_Adminhtml_Con
 					);
 				}
 			}
-
-            Mage::log("Data: " . $data);
-            Mage::log("Model: " . $model);
-
-            $this->_getSession()->addError(
-                Mage::helper('sinch_pricerules')->__('Deliberately Threw Error')
-            );
 			
 			if (!$hasError)
 			{
