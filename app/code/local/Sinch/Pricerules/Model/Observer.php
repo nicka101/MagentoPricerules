@@ -49,6 +49,7 @@ class Sinch_Pricerules_Model_Observer {
 				throw new Exception("Retrieved pricing rule not valid. Missing result action");
 		}
 		//Set all the Prices to prevent Magento revealing the original price in any of its "As low as *price*" blocks
+        $product->setPrice($newPrice);
 		$product->setMinPrice($newPrice);
 		$product->setMinimalPrice($newPrice);
 		$product->setMaxPrice($newPrice);
@@ -63,12 +64,86 @@ class Sinch_Pricerules_Model_Observer {
 			Mage::dispatchEvent('catalog_product_get_final_price', array('product' => $product, 'qty' => 1));
 		}
 	}
+
+    public function ImportPriceRulesFtp(Varien_Event_Observer $observer){
+        $host = $observer->getFtpHost();
+        $username = $observer->getFtpUsername();
+        $password = $observer->getFtpPassword();
+        $pricerulesFilename = $observer->getPricerulesFile() || "CustomerGroupRules.csv";
+        $pricerulesGroupFilename = $observer->getPricerulesGroupFile() || "CustomerGroups.csv";
+        $pricerulesBrandFilename = $observer->getPricerulesBrandFile() || "Manufacturers.csv";
+        $filePath = $observer->getFilePath() || "/";
+        if(is_null($host) || is_null($username) || is_null($password) || is_null($pricerulesFilename) || is_null($pricerulesGroupFilename) || is_null($pricerulesBrandFilename) || is_null($filePath)){
+            Mage::log("Incomplete Arguments Given to Sinch_Pricerules ImportPriceRulesFtp");
+            return;
+        }
+        $conn = ftp_connect($host);
+        if(!$conn){
+            Mage::log("FTP Connect failed in Sinch_Pricerules to host: " . $host);
+            return;
+        }
+        $loginSuccess = ftp_login($conn, $username, $password);
+        if(!$loginSuccess){
+            Mage::log("FTP Login Failed in Sinch_Pricerules for User: " . $username . " on Server: " . $host);
+            ftp_close($conn);
+            return;
+        }
+        $files = ftp_nlist($conn, $filePath);
+        if(!$files){
+            Mage::log("Failed to List FTP Directory (" . $filePath . ") on Server: " . $host . " in Sinch_Pricerules");
+            ftp_close($conn);
+            return;
+        }
+        $pricerulesTempFolder = Mage::getBaseDir() . DIRECTORY_SEPARATOR . "var" . DIRECTORY_SEPARATOR . "pricerules_temp" . DIRECTORY_SEPARATOR;
+        if(!file_exists($pricerulesTempFolder) || !is_dir($pricerulesTempFolder)){
+            $mkSuccess = mkdir($pricerulesTempFolder, 755, true);
+            if(!$mkSuccess){
+                Mage::log("Sinch_Pricerules failed to create temp directory for CSV files at: " . $pricerulesTempFolder);
+                ftp_close($conn);
+                return;
+            }
+        }
+        $preparedFiles = array();
+        $dlSuccess = true;
+        foreach($files as $file){
+            $fileName = substr($file, strlen($filePath));
+            if($fileName == $pricerulesFilename){
+                $dlSuccess &= ftp_get($conn, $pricerulesTempFolder . $pricerulesFilename, $filePath . $pricerulesFilename, FTP_BINARY);
+                if(!$dlSuccess)break;
+                $preparedFiles['rule_file'] = $pricerulesTempFolder . $pricerulesFilename;
+            } else if($fileName == $pricerulesBrandFilename){
+                $dlSuccess &= ftp_get($conn, $pricerulesTempFolder . $pricerulesBrandFilename, $filePath . $pricerulesBrandFilename, FTP_BINARY);
+                if(!$dlSuccess)break;
+                $preparedFiles['brand_file'] = $pricerulesTempFolder . $pricerulesBrandFilename;
+            } else if($fileName == $pricerulesGroupFilename){
+                $dlSuccess &= ftp_get($conn, $pricerulesTempFolder . $pricerulesGroupFilename, $filePath . $pricerulesGroupFilename, FTP_BINARY);
+                if(!$dlSuccess)break;
+                $preparedFiles['group_file'] = $pricerulesTempFolder . $pricerulesGroupFilename;
+            }
+        }
+        if(!$dlSuccess || !isset($preparedFiles['rule_file']) || !isset($preparedFiles['brand_file']) || !isset($preparedFiles['group_file'])){
+            foreach($preparedFiles as $file){
+                unlink($file);
+            }
+            rmdir($pricerulesTempFolder);
+            Mage::log("Failed to download all required files for Sinch_Pricerules import");
+            return;
+        }
+        $preparedData = $preparedFiles;
+        $preparedData['seperator'] = '|';
+        Mage::dispatchEvent('sinch_pricerules_import', $preparedData);
+        foreach($preparedFiles as $file){
+            unlink($file);
+        }
+        rmdir($pricerulesTempFolder);
+    }
 	
 	public function ImportPriceRules(Varien_Event_Observer $observer){
 		$ruleFile = $observer->getRuleFile();
         $groupFile = $observer->getGroupFile();
         $brandFile = $observer->getBrandFile();
 		$terminate_char = $observer->getSeperator();
+        if(is_null($ruleFile) || is_null($groupFile) || is_null($brandFile) || is_null($terminate_char))return;
 		$importTable = Mage::getSingleton('core/resource')->getTableName('sinch_pricerules/import');
 		$prGroupTable = Mage::getSingleton('core/resource')->getTableName('sinch_pricerules/group');
         $prBrandTable = Mage::getSingleton('core/resource')->getTableName('sinch_pricerules/brand');

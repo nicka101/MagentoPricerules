@@ -87,6 +87,15 @@
 					</sinch_pricerules_import_observer>
 				</observers>
 			</sinch_pricerules_import>
+            <sinch_pricerules_import_ftp>
+                <observers>
+                    <sinch_pricerules_import_ftp_observer>
+                        <type>singleton</type>
+                        <class>Sinch_Pricerules_Model_Observer</class>
+                        <method>ImportPriceRulesFtp</method>
+                    </sinch_pricerules_import_ftp_observer>
+                </observers>
+            </sinch_pricerules_import_ftp>
 			<catalog_block_product_list_collection>
 				<observers>
 					<sinch_pricerules_list_observer>

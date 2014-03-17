@@ -94,12 +94,13 @@ class Sinch_Pricerules_Adminhtml_PricerulesController extends Mage_Adminhtml_Con
         if ($data) 
 		{
 			//Below is a fix for "IS NULL" checks
-			if($data["category_id"] == 0){
-				$data["category_id"] = null;
-			}
-			if($data["brand_id"] == 0){
+            if(isset($data["category_id"]) && $data["category_id"] == 0){
+                $data["category_id"] = null;
+            }
+			if(isset($data["brand_id"]) && $data["brand_id"] == 0){
 				$data["brand_id"] = null;
 			}
+
             $model = Mage::getModel('sinch_pricerules/pricerules');
             $priceRuleId = $this->getRequest()->getParam('pricerules_id');
             
@@ -158,7 +159,7 @@ class Sinch_Pricerules_Adminhtml_PricerulesController extends Mage_Adminhtml_Con
 				}
 				
 				$model->addData($data);
-					
+
 				try 
 				{
 					$model->save();
