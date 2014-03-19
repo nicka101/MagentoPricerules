@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * Pricerules Upgrade Script
+ * Drop unused column on Import Table
+ *
+ * @author Stock in the Channel
+ */
 $installer = $this;
 $installer->startSetup();
 

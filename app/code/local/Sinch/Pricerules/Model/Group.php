@@ -1,4 +1,9 @@
 <?php
+/**
+ * Pricerules Group Model
+ *
+ * @author Stock in the Channel
+ */
 class Sinch_Pricerules_Model_Group extends Mage_Core_Model_Abstract {
 
     protected function _construct(){

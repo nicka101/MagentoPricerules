@@ -1,4 +1,11 @@
 <?xml version="1.0"?>
+<!--
+/**
+ * Price Rules api config
+ *
+ * @author Stock in the Channel
+ */
+-->
 <config>
     <api>
         <resources>

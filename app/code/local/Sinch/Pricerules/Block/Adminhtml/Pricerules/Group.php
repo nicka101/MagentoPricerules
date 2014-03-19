@@ -1,4 +1,9 @@
 <?php
+/**
+ * Price Rules Group List admin grid container
+ *
+ * @author Stock in the Channel
+ */
 class Sinch_Pricerules_Block_Adminhtml_Pricerules_Group extends Mage_Adminhtml_Block_Widget_Grid_Container
 {
     public function __construct()

@@ -1,9 +1,10 @@
 <?php
-/*
+/**
  * Upgrade Script for 1.2.3 to 1.3.1
- *
  * Large version change as this adds a table (and change the table engine for the brands table)
  * I would also do the same to the import table but only InnoDB respects Foreign Keys and data integrity is more important in this case
+ *
+ * @author Stock in the Channel
  */
 
 $installer = $this;

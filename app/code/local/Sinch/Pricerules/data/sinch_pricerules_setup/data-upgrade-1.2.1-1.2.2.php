@@ -1,5 +1,9 @@
 <?php
-
+/**
+ * Data Upgrade Script 1.2.1-1.2.2
+ *
+ * @author Stock in the Channel
+ */
 $pricerules = Mage::getModel('sinch_pricerules/pricerules')->getCollection();
 $groupModel = Mage::getModel('sinch_pricerules/group');
 

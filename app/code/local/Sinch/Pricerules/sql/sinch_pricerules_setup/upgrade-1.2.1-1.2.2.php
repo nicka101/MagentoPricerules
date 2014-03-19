@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * Pricerules Upgrade Script
+ * Adds the Group Table and some constraints
+ *
+ * @author Stock in the Channel
+ */
 $installer = $this;
 $installer->startSetup();
 

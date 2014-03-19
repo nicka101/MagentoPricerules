@@ -1,4 +1,9 @@
 <?php
+/**
+ * Price rules group controller
+ *
+ * @author Stock in the Channel
+ */
 class Sinch_Pricerules_Adminhtml_Pricerules_GroupController extends Mage_Adminhtml_Controller_Action {
 
     protected function _initAction()

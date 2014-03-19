@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * Pricerules Upgrade Script
+ * Makes the Customer Attribute a Select
+ *
+ * @author Stock in the Channel
+ */
 $installer = $this;
 $installer->startSetup();
 

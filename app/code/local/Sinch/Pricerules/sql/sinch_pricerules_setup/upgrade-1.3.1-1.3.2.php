@@ -1,6 +1,8 @@
 <?php
-/*
+/**
  * Pricerules Upgrade Script
+ *
+ * @author Stock in the Channel
  */
 $installer = $this;
 $installer->startSetup();
