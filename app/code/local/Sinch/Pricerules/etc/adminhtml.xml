@@ -12,11 +12,22 @@
             <title>Stock in the Channel</title>
             <sort_order>200</sort_order>
             <children>
-                <manage translate="title" module="sinch_pricerules">
-                    <title>Manage Price Rules</title>
-                    <action>adminhtml/pricerules</action>
+                <pricerules translate="title" module="sinch_pricerules">
+                    <title>Price Rules</title>
                     <sort_order>250</sort_order>
-                </manage>
+                    <children>
+                        <pricerules translate="title" module="sinch_pricerules">
+                            <title>Manage Rules</title>
+                            <action>adminhtml/pricerules</action>
+                            <sort_order>100</sort_order>
+                        </pricerules>
+                        <groups translate="title" module="sinch_pricerules">
+                            <title>Manage Groups</title>
+                            <action>adminhtml/pricerules_group</action>
+                            <sort_order>200</sort_order>
+                        </groups>
+                    </children>
+                </pricerules>
             </children>
          </sinch>
     </menu>
@@ -29,7 +40,7 @@
                         <title>Stock in the Channel</title>
                         <sort_order>65</sort_order>
                         <children>
-                            <manage translate="title">
+                            <pricerules_manage translate="title">
                                 <title>Manage Price Rules</title>
                                 <sort_order>0</sort_order>
                                 <children>
@@ -42,7 +53,21 @@
                                         <sort_order>10</sort_order>
                                     </delete>
                                 </children>
-                            </manage>
+                            </pricerules_manage>
+                            <group_manage translate="title">
+                                <title>Manage Price Groups</title>
+                                <sort_order>0</sort_order>
+                                <children>
+                                    <save translate="title">
+                                        <title>Save Price Group</title>
+                                        <sort_order>0</sort_order>
+                                    </save>
+                                    <delete translate="title">
+                                        <title>Delete Price Group</title>
+                                        <sort_order>10</sort_order>
+                                    </delete>
+                                </children>
+                            </group_manage>
                         </children>
                     </sinch>
                     <system>

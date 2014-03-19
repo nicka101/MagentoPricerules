@@ -36,4 +36,34 @@
             </block>
         </reference>
     </adminhtml_pricerules_edit>
+
+    <adminhtml_pricerules_group_index>
+        <reference name="content">
+            <block type="sinch_pricerules/adminhtml_pricerules_group" name="group" />
+        </reference>
+    </adminhtml_pricerules_group_index>
+
+    <adminhtml_pricerules_group_grid>
+        <block type="sinch_pricerules/adminhtml_pricerules_group_grid" name="root" />
+    </adminhtml_pricerules_group_grid>
+
+    <adminhtml_pricerules_group_new>
+        <update handle="adminhtml_pricerules_group_edit" />
+    </adminhtml_pricerules_group_new>
+
+    <adminhtml_pricerules_group_edit>
+        <update handle="editor" />
+        <reference name="content">
+            <block type="sinch_pricerules/adminhtml_pricerules_group_edit" name="pricerules_edit" />
+        </reference>
+        <reference name="left">
+            <block type="sinch_pricerules/adminhtml_pricerules_group_edit_tabs" name="pricerules_edit_tabs">
+                <block type="sinch_pricerules/adminhtml_pricerules_group_edit_tab_main" name="pricerules_group_edit_tab_main" />
+                <action method="addTab">
+                    <name>main_section</name>
+                    <block>pricerules_group_edit_tab_main</block>
+                </action>
+            </block>
+        </reference>
+    </adminhtml_pricerules_group_edit>
 </layout>

@@ -7,6 +7,7 @@
 class Sinch_Pricerules_Helper_Data extends Mage_Core_Helper_Data
 {
     protected $_priceRulesItemInstance;
+    protected $_priceRulesGroupItemInstance;
 	
     public function getPriceRulesItemInstance()
     {
@@ -16,10 +17,25 @@ class Sinch_Pricerules_Helper_Data extends Mage_Core_Helper_Data
 
             if (!$this->_priceRulesItemInstance) 
 			{
-                Mage::throwException($this->__('Price rules item instance does not exist in Registry'));
+                Mage::throwException($this->__('Price Rules item instance does not exist in Registry'));
             }
         }
 
         return $this->_priceRulesItemInstance;
+    }
+
+    public function getPriceRulesGroupItemInstance()
+    {
+        if (!$this->_priceRulesGroupItemInstance)
+        {
+            $this->_priceRulesGroupItemInstance = Mage::registry('pricerules_group_item');
+
+            if (!$this->_priceRulesGroupItemInstance)
+            {
+                Mage::throwException($this->__('Price Group item instance does not exist in Registry'));
+            }
+        }
+
+        return $this->_priceRulesGroupItemInstance;
     }
 }

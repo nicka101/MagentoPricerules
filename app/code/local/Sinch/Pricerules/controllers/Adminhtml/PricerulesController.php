@@ -11,14 +11,14 @@ class Sinch_Pricerules_Adminhtml_PricerulesController extends Mage_Adminhtml_Con
     {
         // load layout, set active menu and breadcrumbs
         $this->loadLayout()
-            ->_setActiveMenu('pricerules/manage')
+            ->_setActiveMenu('sinch/pricerules/pricerules')
             ->_addBreadcrumb(
                   Mage::helper('sinch_pricerules')->__('Price Rules'),
                   Mage::helper('sinch_pricerules')->__('Price Rules')
               )
             ->_addBreadcrumb(
-                  Mage::helper('sinch_pricerules')->__('Manage Price Rules'),
-                  Mage::helper('sinch_pricerules')->__('Manage Price Rules')
+                  Mage::helper('sinch_pricerules')->__('Manage Rules'),
+                  Mage::helper('sinch_pricerules')->__('Manage Rules')
               );
         
 		return $this;
@@ -27,7 +27,7 @@ class Sinch_Pricerules_Adminhtml_PricerulesController extends Mage_Adminhtml_Con
 	public function indexAction()
 	{
 		$this->_title($this->__('Price Rules'))
-             ->_title($this->__('Manage Price Rules'));
+             ->_title($this->__('Manage Rules'));
 
         $this->_initAction();
         $this->renderLayout();
@@ -250,13 +250,13 @@ class Sinch_Pricerules_Adminhtml_PricerulesController extends Mage_Adminhtml_Con
 		{
             case 'new':
             case 'save':
-                return Mage::getSingleton('admin/session')->isAllowed('pricerules/manage/save');
+                return Mage::getSingleton('admin/session')->isAllowed('pricerules/pricerules_manage/save');
                 break;
             case 'delete':
-                return Mage::getSingleton('admin/session')->isAllowed('pricerules/manage/delete');
+                return Mage::getSingleton('admin/session')->isAllowed('pricerules/pricerules_manage/delete');
                 break;
             default:
-                return Mage::getSingleton('admin/session')->isAllowed('pricerules/manage');
+                return Mage::getSingleton('admin/session')->isAllowed('pricerules/pricerules_manage');
                 break;
         }
     }

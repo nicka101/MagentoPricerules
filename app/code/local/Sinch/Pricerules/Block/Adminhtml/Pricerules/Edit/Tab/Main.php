@@ -12,7 +12,7 @@ class Sinch_Pricerules_Block_Adminhtml_Pricerules_Edit_Tab_Main
     {
         $model = Mage::helper('sinch_pricerules')->getPriceRulesItemInstance();
 
-        if (Mage::helper('sinch_pricerules/admin')->isActionAllowed('save')) 
+        if (Mage::helper('sinch_pricerules/admin')->isActionAllowed('pricerules', 'save'))
 		{
             $isElementDisabled = false;
         } 

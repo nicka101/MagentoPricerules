@@ -7,8 +7,8 @@
  
 class Sinch_Pricerules_Helper_Admin extends Mage_Core_Helper_Abstract
 {
-    public function isActionAllowed($action)
+    public function isActionAllowed($area, $action)
     {
-        return Mage::getSingleton('admin/session')->isAllowed('pricerules/manage/' . $action);
+        return Mage::getSingleton('admin/session')->isAllowed('pricerules/' . $area . '_manage/' . $action);
     }
 }

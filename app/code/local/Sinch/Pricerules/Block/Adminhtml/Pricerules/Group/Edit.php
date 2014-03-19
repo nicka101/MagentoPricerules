@@ -1,11 +1,11 @@
 <?php
 /**
- * Price Rules List admin edit form container
+ * Price Rules Group List admin edit form container
  *
  * @author Stock in the Channel
  */
- 
-class Sinch_Pricerules_Block_Adminhtml_Pricerules_Edit extends Mage_Adminhtml_Block_Widget_Form_Container
+
+class Sinch_Pricerules_Block_Adminhtml_Pricerules_Group_Edit extends Mage_Adminhtml_Block_Widget_Form_Container
 {
     public function __construct()
     {
@@ -15,26 +15,26 @@ class Sinch_Pricerules_Block_Adminhtml_Pricerules_Edit extends Mage_Adminhtml_Bl
 
         parent::__construct();
 
-        if (Mage::helper('sinch_pricerules/admin')->isActionAllowed('pricerules', 'save'))
-		{
-            $this->_updateButton('save', 'label', Mage::helper('sinch_pricerules')->__('Save Price Rule'));
+        if (Mage::helper('sinch_pricerules/admin')->isActionAllowed('group', 'save'))
+        {
+            $this->_updateButton('save', 'label', Mage::helper('sinch_pricerules')->__('Save Price Group'));
             $this->_addButton('saveandcontinue', array(
                 'label'   => Mage::helper('adminhtml')->__('Save and Continue Edit'),
                 'onclick' => 'saveAndContinueEdit()',
                 'class'   => 'save',
             ), -100);
-        } 
-		else 
-		{
+        }
+        else
+        {
             $this->_removeButton('save');
         }
 
-        if (Mage::helper('sinch_pricerules/admin')->isActionAllowed('pricerules', 'delete'))
-		{
-            $this->_updateButton('delete', 'label', Mage::helper('sinch_pricerules')->__('Delete Price Rule'));
-        } 
-		else 
-		{
+        if (Mage::helper('sinch_pricerules/admin')->isActionAllowed('group', 'delete'))
+        {
+            $this->_updateButton('delete', 'label', Mage::helper('sinch_pricerules')->__('Delete Price Group'));
+        }
+        else
+        {
             $this->_removeButton('delete');
         }
 
@@ -60,16 +60,16 @@ class Sinch_Pricerules_Block_Adminhtml_Pricerules_Edit extends Mage_Adminhtml_Bl
 
     public function getHeaderText()
     {
-        $model = Mage::helper('sinch_pricerules')->getPriceRulesItemInstance();
-        
-		if ($model->getId()) 
-		{
-            return Mage::helper('sinch_pricerules')->__("Edit Price Rule #%s",
-                 $this->escapeHtml($model->getId()));
-        } 
-		else 
-		{
-            return Mage::helper('sinch_pricerules')->__('New Price Rule');
+        $model = Mage::helper('sinch_pricerules')->getPriceRulesGroupItemInstance();
+
+        if ($model->getId())
+        {
+            return Mage::helper('sinch_pricerules')->__("Edit Price Group #%s",
+                $this->escapeHtml($model->getId()));
+        }
+        else
+        {
+            return Mage::helper('sinch_pricerules')->__('New Price Group');
         }
     }
 }
