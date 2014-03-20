@@ -49,22 +49,6 @@ class Sinch_Pricerules_Block_Adminhtml_Pricerules_Group_Grid extends Mage_Adminh
             'type' => 'varchar'
         ));
 
-        $this->addColumn('action',
-            array(
-                'header'    => Mage::helper('sinch_pricerules')->__('Action'),
-                'width'     => '100px',
-                'type'      => 'action',
-                'getter'    => 'getId',
-                'actions'   => array(array(
-                    'caption' => Mage::helper('sinch_pricerules')->__('Edit'),
-                    'url'     => array('base' => '*/*/edit'),
-                    'field'   => 'id'
-                )),
-                'filter'    => false,
-                'sortable'  => false,
-                'index'     => 'pricerules',
-            ));
-
         return parent::_prepareColumns();
     }
 

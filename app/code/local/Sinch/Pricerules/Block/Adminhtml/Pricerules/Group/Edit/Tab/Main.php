@@ -41,11 +41,11 @@ class Sinch_Pricerules_Block_Adminhtml_Pricerules_Group_Edit_Tab_Main
         else
         {
             $model->is_manually_added = true;
-        }
 
-        $fieldset->addField('is_manually_added', 'hidden', array(
-            'name' => 'is_manually_added'
-        ));
+            $fieldset->addField('is_manually_added', 'hidden', array(
+                'name' => 'is_manually_added'
+            ));
+        }
 
         if ($new)
         {
