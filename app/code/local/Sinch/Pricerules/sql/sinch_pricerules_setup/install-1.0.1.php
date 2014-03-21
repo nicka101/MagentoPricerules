@@ -134,7 +134,7 @@ $installer->getConnection()
 	);
 
 $table = $installer->getConnection()
-    ->newTable($installer->getTable('sinch_pricerulesimport/pricerulesimport'))
+    ->newTable($installer->getTable('sinch_pricerules/import'))
     ->addColumn('pricerules_id', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
         'unsigned' => true,
         'identity' => true,
