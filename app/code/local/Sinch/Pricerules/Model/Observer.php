@@ -69,10 +69,10 @@ class Sinch_Pricerules_Model_Observer {
         $host = $observer->getFtpHost();
         $username = $observer->getFtpUsername();
         $password = $observer->getFtpPassword();
-        $pricerulesFilename = $observer->getPricerulesFile() || "CustomerGroupRules.csv";
-        $pricerulesGroupFilename = $observer->getPricerulesGroupFile() || "CustomerGroups.csv";
-        $pricerulesBrandFilename = $observer->getPricerulesBrandFile() || "Manufacturers.csv";
-        $filePath = $observer->getFilePath() || "/";
+        $pricerulesFilename = $observer->hasData('pricerules_file') ? $observer->getPricerulesFile() : "CustomerGroupRules.csv";
+        $pricerulesGroupFilename = $observer->hasData('pricerules_group_file') ? $observer->getPricerulesGroupFile() : "CustomerGroups.csv";
+        $pricerulesBrandFilename = $observer->hasData('pricerules_brand_file') ? $observer->getPricerulesBrandFile() : "Manufacturers.csv";
+        $filePath = $observer->hasData('file_path') ? $observer->getFilePath() : "/";
         if(is_null($host) || is_null($username) || is_null($password) || is_null($pricerulesFilename) || is_null($pricerulesGroupFilename) || is_null($pricerulesBrandFilename) || is_null($filePath)){
             Mage::log("Incomplete Arguments Given to Sinch_Pricerules ImportPriceRulesFtp");
             return;
@@ -85,6 +85,11 @@ class Sinch_Pricerules_Model_Observer {
         $loginSuccess = ftp_login($conn, $username, $password);
         if(!$loginSuccess){
             Mage::log("FTP Login Failed in Sinch_Pricerules for User: " . $username . " on Server: " . $host);
+            ftp_close($conn);
+            return;
+        }
+        if(!ftp_pasv($conn, true)){
+            Mage::log("FTP PASV Failed in Sinch_Pricerules to host: " . $host);
             ftp_close($conn);
             return;
         }
@@ -143,7 +148,10 @@ class Sinch_Pricerules_Model_Observer {
         $groupFile = $observer->getGroupFile();
         $brandFile = $observer->getBrandFile();
 		$terminate_char = $observer->getSeperator();
-        if(is_null($ruleFile) || is_null($groupFile) || is_null($brandFile) || is_null($terminate_char))return;
+        if(is_null($ruleFile) || is_null($groupFile) || is_null($brandFile) || is_null($terminate_char)){
+            Mage::log("ImportPriceRules missing Arguments!!");
+            return;
+        }
 		$importTable = Mage::getSingleton('core/resource')->getTableName('sinch_pricerules/import');
 		$prGroupTable = Mage::getSingleton('core/resource')->getTableName('sinch_pricerules/group');
         $prBrandTable = Mage::getSingleton('core/resource')->getTableName('sinch_pricerules/brand');
