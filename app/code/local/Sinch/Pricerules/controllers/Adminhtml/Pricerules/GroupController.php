@@ -251,12 +251,33 @@ class Sinch_Pricerules_Adminhtml_Pricerules_GroupController extends Mage_Adminht
 
     private function updateCustomerGroup($groupId, $newGroupId = 0){
         $dbWrite = Mage::getSingleton('core/resource')->getConnection('core_write');
-        $dbWrite->query("UPDATE " . Mage::getSingleton('core/resource')->getTableName('customer_entity_int') . "
-        SET value = :newGroupId
-        WHERE attribute_id = (SELECT attribute_id FROM ". Mage::getSingleton('core/resource')->getTableName('eav/attribute') ." WHERE attribute_code = 'sinch_pricerules_group' LIMIT 1)
-        AND entity_id = :groupId", array(
-            'newGroupId' => $newGroupId,
-            'groupId' => $groupId
+
+        $attrRes = $dbWrite->query("SELECT attribute_id FROM " . Mage::getSingleton('core/resource')->getTableName('eav/attribute') . " WHERE attribute_code = 'sinch_pricerules_group' LIMIT 1")->fetch();
+        $attributeId = $attrRes["attribute_id"];
+
+        $res = $dbWrite->query("SELECT value_id, value FROM " . Mage::getSingleton('core/resource')->getTableName('customer_entity_varchar') . " WHERE attribute_id = :attributeId AND FIND_IN_SET(:$groupId, value)", array(
+            "attributeId" => $attributeId,
+            "groupId"     => $groupId
         ));
+        while(($row = $res->fetch()) != null){
+            $groups = explode(",", $row["value"]);
+            foreach($groups as $id => $group){
+                if($group == $groupId){
+                    if($newGroupId != 0){
+                        $groups[$id] = $newGroupId;
+                    } else {
+                        if(count($groups) > 1){
+                            unset($groups[$id]);
+                        } else {
+                            $groups = $newGroupId;
+                        }
+                    }
+                }
+            }
+            $dbWrite->query("UPDATE " . Mage::getSingleton('core/resource')->getTableName('customer_entity_varchar') . " SET value = :updatedGroup WHERE value_id = :valueId", array(
+                "updatedGroup" => implode(",", $groups),
+                "valueId"      => $row["value_id"]
+            ));
+        }
     }
 }

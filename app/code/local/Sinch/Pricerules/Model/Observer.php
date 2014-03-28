@@ -16,7 +16,7 @@ class Sinch_Pricerules_Model_Observer {
 		$queryParams["productId"] = $product->getId();
 		$queryParams["manufacturer"] = $product->getManufacturer();
 		$custSession = Mage::getSingleton('customer/session');
-		$queryParams["customerGroup"] = ($custSession->isLoggedIn() ? $custSession->getCustomer()->getSinchPricerulesGroup() : 0);
+		$queryParams["customerGroup"] = ($custSession->isLoggedIn() ? $custSession->getCustomer()->getSinchPricerulesGroup() : '0');
 		$catParamNames = array();
 		foreach($product->getCategoryIds() as $index => $id){
 			$catParamNames[] = ":" . CatIDPrefix . $index;
@@ -31,7 +31,7 @@ class Sinch_Pricerules_Model_Observer {
 			  product_id = :productId ) AND
 			( brand_id IS NULL OR
 			  brand_id = :manufacturer ) AND
-			group_id = :customerGroup
+			FIND_IN_SET(group_id, :customerGroup) > 0
 			ORDER BY execution_order ASC
 			LIMIT 1
 		";
