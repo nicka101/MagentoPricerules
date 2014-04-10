@@ -7,11 +7,29 @@
 define('CatIDPrefix', 'CategoryID_');
 
 class Sinch_Pricerules_Model_Observer {
+
+    private $useCost;
+    private $priceIfCostNull;
+
+    public function __construct(){
+        $this->useCost = Mage::getStoreConfig('pricerules/options/apply_on_cost');
+        $this->priceIfCostNull = Mage::getStoreConfig('pricerules/options/price_if_cost_null');
+    }
+
 	public function getFinalPrice(Varien_Event_Observer $observer){
 		$product = $observer->getProduct();
 		$rulesTable = Mage::getSingleton('core/resource')->getTableName('sinch_pricerules/pricerules');
 		$queryParams = array();
-		$originalPrice = $product->getPrice();
+		$originalPrice = null;
+        if($this->useCost){
+            $originalPrice = $product->getCost();
+            if($originalPrice == null){
+                if($this->priceIfCostNull) $originalPrice = $product->getPrice();
+                else return $this;
+            }
+        } else {
+            $originalPrice = $product->getPrice();
+        }
 		$queryParams["originalPrice"] = $originalPrice;
 		$queryParams["productId"] = $product->getId();
 		$queryParams["manufacturer"] = $product->getManufacturer();
