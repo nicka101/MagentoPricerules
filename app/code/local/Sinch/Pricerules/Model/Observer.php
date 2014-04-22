@@ -7,11 +7,29 @@
 define('CatIDPrefix', 'CategoryID_');
 
 class Sinch_Pricerules_Model_Observer {
+
+    private $useCost;
+    private $priceIfCostNull;
+
+    public function __construct(){
+        $this->useCost = Mage::getStoreConfig('pricerules/options/apply_on_cost');
+        $this->priceIfCostNull = Mage::getStoreConfig('pricerules/options/price_if_cost_null');
+    }
+
 	public function getFinalPrice(Varien_Event_Observer $observer){
 		$product = $observer->getProduct();
 		$rulesTable = Mage::getSingleton('core/resource')->getTableName('sinch_pricerules/pricerules');
 		$queryParams = array();
-		$originalPrice = $product->getPrice();
+		$originalPrice = null;
+        if($this->useCost){
+            $originalPrice = $product->getCost();
+            if($originalPrice == null){
+                if($this->priceIfCostNull) $originalPrice = $product->getPrice();
+                else return $this;
+            }
+        } else {
+            $originalPrice = $product->getPrice();
+        }
 		$queryParams["originalPrice"] = $originalPrice;
 		$queryParams["productId"] = $product->getId();
 		$queryParams["manufacturer"] = $product->getManufacturer();
@@ -60,10 +78,35 @@ class Sinch_Pricerules_Model_Observer {
 	
 	public function ListCollectionPrice(Varien_Event_Observer $observer){
 		$collection = $observer->getCollection();
+        $productIds = array();
+        foreach($collection as $product){
+            $productIds[] = $product->getId();
+        }
+        $costs = $this->productListCostWorkaround($productIds);
 		foreach($collection as $product){
+            if(isset($costs[$product->getId()]))$product->setCost($costs[$product->getId()]);
 			Mage::dispatchEvent('catalog_product_get_final_price', array('product' => $product, 'qty' => 1));
 		}
 	}
+
+    //Workaround for not recieving attributes correctly on product list pages. If you have a better plan, tell me
+    private function productListCostWorkaround(array $productIds){
+        foreach($productIds as $index => $prodId){
+            if(!is_numeric($prodId))unset($productIds[$index]);
+        }
+        if(count($productIds) < 1)return array();
+        $dbRead = Mage::getSingleton('core/resource')->getConnection('db_read');
+        //We will trust the $productIds array as we check above that it only contains numbers
+        $query = $dbRead->query("SELECT entity_id, value FROM ". Mage::getSingleton('core/resource')->getTableName('catalog_product_entity_decimal') . "
+        WHERE attribute_id = (SELECT attribute_id FROM " . Mage::getSingleton('core/resource')->getTableName('eav/attribute') . " WHERE attribute_code = 'cost' LIMIT 1)
+        AND entity_id IN (" . implode(",", $productIds) . ")
+        AND store_id = :storeId", array('storeId' => Mage::app()->getStore()->getStoreId()));
+        $results = array();
+        while($row = $query->fetch(PDO::FETCH_ASSOC)){ //Specify FETCH_ASSOC to save memory as we know the column names are all we need
+            $results[$row["entity_id"]] = $row["value"];
+        }
+        return $results;
+    }
 
     public function ImportPriceRulesFtp(Varien_Event_Observer $observer){
         $host = $observer->getFtpHost();

@@ -134,6 +134,10 @@
                 <items_per_page>20</items_per_page>
                 <days_difference>3</days_difference>
             </view>
+            <options>
+                <apply_on_cost>true</apply_on_cost>
+                <price_if_cost_null>true</price_if_cost_null>
+            </options>
         </pricerules>
     </default>
 </config>
