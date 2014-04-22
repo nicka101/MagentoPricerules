@@ -49,6 +49,13 @@ class Sinch_Pricerules_Block_Adminhtml_Pricerules_Group_Grid extends Mage_Adminh
             'type' => 'varchar'
         ));
 
+        $this->addColumn('execution_order', array(
+            'header' => Mage::helper('sinch_pricerules')->__('Execution Order'),
+            'width' => '50px',
+            'index' => 'execution_order',
+            'type' => 'int'
+        ));
+
         return parent::_prepareColumns();
     }
 

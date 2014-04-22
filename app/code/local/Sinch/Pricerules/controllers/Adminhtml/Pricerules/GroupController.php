@@ -111,8 +111,12 @@ class Sinch_Pricerules_Adminhtml_Pricerules_GroupController extends Mage_Adminht
 
             if(!isset($data["group_name"])){
                 $hasError = true;
-
                 $this->_getSession()->addError("Group Name is not specified");
+            }
+
+            if(!isset($data["execution_order"])){
+                $hasError = true;
+                $this->_getSession()->addError("Execution Order is not specified");
             }
 
             $groupId = $this->getRequest()->getParam('group_id');

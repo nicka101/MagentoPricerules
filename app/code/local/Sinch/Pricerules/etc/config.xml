@@ -9,7 +9,7 @@
 <config>
     <modules>
         <Sinch_Pricerules>
-            <version>1.3.3</version>
+            <version>1.4.2</version>
         </Sinch_Pricerules>
     </modules>
 	<global>

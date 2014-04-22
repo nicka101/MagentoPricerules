@@ -41,16 +41,18 @@ class Sinch_Pricerules_Model_Observer {
 			$queryParams[CatIDPrefix . $index] = $id;
 		}
 		$dbRead = Mage::getSingleton('core/resource')->getConnection('core_read');
-		$query = "SELECT markup_percentage, markup_price, absolute_price FROM " . $rulesTable . " WHERE
-			( price_from <= :originalPrice AND price_to >= :originalPrice ) AND
-			( category_id IS NULL OR 
-			  category_id IN ( " . implode(", ", $catParamNames) . " ) ) AND
-			( product_id IS NULL OR
-			  product_id = :productId ) AND
-			( brand_id IS NULL OR
-			  brand_id = :manufacturer ) AND
-			FIND_IN_SET(group_id, :customerGroup) > 0
-			ORDER BY execution_order ASC
+		$query = "SELECT pr.markup_percentage, pr.markup_price, pr.absolute_price FROM " . $rulesTable . " pr
+		    INNER JOIN " . Mage::getSingleton('core/resource')->getTableName('sinch_pricerules/group') ." pg ON pr.group_id
+		    WHERE
+			( pr.price_from <= :originalPrice AND pr.price_to >= :originalPrice ) AND
+			( pr.category_id IS NULL OR
+			  pr.category_id IN ( " . implode(", ", $catParamNames) . " ) ) AND
+			( pr.product_id IS NULL OR
+			  pr.product_id = :productId ) AND
+			( pr.brand_id IS NULL OR
+			  pr.brand_id = :manufacturer ) AND
+			FIND_IN_SET(pr.group_id, :customerGroup) > 0
+			ORDER BY pg.execution_order ASC, pr.execution_order ASC
 			LIMIT 1
 		";
 		$relevantRules = $dbRead->query($query, $queryParams);
@@ -211,7 +213,7 @@ class Sinch_Pricerules_Model_Observer {
             OPTIONALLY ENCLOSED BY '\"'
             LINES TERMINATED BY '\r\n'
             IGNORE 1 LINES
-            (group_id, group_name)
+            (group_id, group_name, execution_order)
         ");
 
 		$dbWrite->query("TRUNCATE TABLE " . $importTable);

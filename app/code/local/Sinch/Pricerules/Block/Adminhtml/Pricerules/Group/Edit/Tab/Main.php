@@ -72,6 +72,13 @@ class Sinch_Pricerules_Block_Adminhtml_Pricerules_Group_Edit_Tab_Main
             'required' => true
         ));
 
+        $fieldset->addField('execution_order', 'text', array(
+            'name' => 'execution_order',
+            'label' => Mage::helper('sinch_pricerules')->__('Execution Order'),
+            'title' => Mage::helper('sinch_pricerules')->__('Execution Order'),
+            'required' => true
+        ));
+
         Mage::dispatchEvent('adminhtml_pricerules_group_edit_tab_main_prepare_form', array('form' => $form));
 
         $form->setValues($model->getData());
